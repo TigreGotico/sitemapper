@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from unblock_requests import CloudflareSession
 
 _DEFAULT_MAX_SITEMAPS = 50
-_DEFAULT_MAX_URLS = 10_000
+_DEFAULT_MAX_URLS = 50_000
 
 
 @dataclass
@@ -21,6 +21,7 @@ class SiteDiscovery:
 
     Attributes:
         base_url:  The URL that was passed to :func:`discover`.
+        blocked:   Whether robots.txt fetch was blocked (soft block detected).
         robots:    Parsed robots.txt (may have empty fields if unreachable).
         sitemaps:  Each sitemap document fetched.
         urls:      Deduplicated list of all :class:`~sitemapper.sitemap.SitemapUrl`
@@ -28,6 +29,7 @@ class SiteDiscovery:
     """
 
     base_url: str
+    blocked: bool = False
     robots: Robots = field(default_factory=Robots)
     sitemaps: List[Sitemap] = field(default_factory=list)
     urls: List[SitemapUrl] = field(default_factory=list)
@@ -40,6 +42,7 @@ class SiteDiscovery:
     def to_dict(self) -> dict:
         return {
             "base_url": self.base_url,
+            "blocked": self.blocked,
             "robots": self.robots.to_dict(),
             "sitemaps": [s.to_dict() for s in self.sitemaps],
             "url_count": self.url_count,
@@ -50,6 +53,7 @@ class SiteDiscovery:
         sitemap_count = len([s for s in self.sitemaps if not s.is_index])
         lines = [
             f"Base URL:       {self.base_url}",
+            f"Blocked:        {self.blocked}",
             f"Sitemaps found: {sitemap_count}",
             f"URLs in sitemaps: {self.url_count}",
             f"Crawl-delay:    {self.robots.crawl_delay}",
@@ -89,16 +93,26 @@ def discover(
     Returns:
         A populated :class:`SiteDiscovery`.
     """
+    # Defensive import for is_blocked detector
+    try:
+        from unblock_requests import is_blocked as _is_blocked
+    except Exception:
+        def _is_blocked(text): return False
+
     # Normalise base — strip trailing slash.
     base = base_url.rstrip("/")
 
     # 1. Fetch robots.txt (soft-fail — recon must not break on missing robots).
     robots_url = urljoin(base + "/", "robots.txt")
     robots_text = ""
+    blocked = False
     try:
         r = session.get(robots_url, timeout=timeout)
         if r.status_code == 200:
             robots_text = r.text
+            if _is_blocked(robots_text):
+                blocked = True
+                robots_text = ""
     except Exception:
         pass
     robots = parse_robots(robots_text, base_url=robots_url)
@@ -128,6 +142,7 @@ def discover(
 
     return SiteDiscovery(
         base_url=base_url,
+        blocked=blocked,
         robots=robots,
         sitemaps=sitemaps,
         urls=all_urls,

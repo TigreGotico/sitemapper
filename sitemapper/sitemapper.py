@@ -32,7 +32,7 @@ class Sitemapper:
         wayback_fallback: bool = True,
         timeout: float = 30.0,
         max_sitemaps: int = 50,
-        max_urls: int = 10_000,
+        max_urls: int = 50_000,
     ) -> None:
         self._session: CloudflareSession = make_session(
             flaresolverr_url=flaresolverr_url,
