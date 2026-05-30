@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sitemapper"
+dynamic = ["version"]
+description = "Site-recon tooling: discover robots.txt + sitemaps and crawl internal links into a graph"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [{ name = "JarbasAi", email = "jarbasai@mailfence.com" }]
+requires-python = ">=3.9"
+dependencies = [
+    "unblock_requests",
+    "beautifulsoup4",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.optional-dependencies]
+stealth = ["curl-cffi"]
+anon = ["anon_requests"]
+test = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/TigreGotico/sitemapper"
+Repository = "https://github.com/TigreGotico/sitemapper"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sitemapper*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "sitemapper.version.__version__" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "live: marks tests that require network access (deselect with -m 'not live')",
+]
