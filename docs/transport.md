@@ -1,16 +1,16 @@
 # Transport
 
-All HTTP goes through `unblock_requests.CloudflareSession` (env prefix
-`SITEMAPPER`) so recon works on Cloudflare-fronted sites.
+All HTTP traffic goes through `unblock_requests.CloudflareSession` (env
+prefix `SITEMAPPER`), so recon works on Cloudflare-fronted sites.
 
 ## Environment variables
 
 | Variable                           | Description |
 |------------------------------------|-------------|
 | `SITEMAPPER_FLARESOLVERR_URL`      | FlareSolverr base URL, e.g. `http://localhost:8191`. |
-| `SITEMAPPER_FLARESOLVERR_FALLBACK` | `1` — escalate blocked GETs to the solver; keep curl_cffi as the fast path. |
-| `SITEMAPPER_WAYBACK_FALLBACK`      | `1` — fall back to the Wayback Machine on failure. |
-| `SITEMAPPER_TRANSPORT`             | Force a mode: `requests` / `curl_cffi` / `wayback` / `flaresolverr`. |
+| `SITEMAPPER_FLARESOLVERR_FALLBACK` | `1`: escalate blocked GETs to the solver, keeping curl_cffi as the fast path. |
+| `SITEMAPPER_WAYBACK_FALLBACK`      | `1`: fall back to the Wayback Machine on failure. |
+| `SITEMAPPER_TRANSPORT`             | Force a mode: `requests`, `curl_cffi`, `wayback`, or `flaresolverr`. |
 
 ## Programmatic configuration
 
@@ -36,6 +36,9 @@ python -m sitemapper https://example.com --flaresolverr http://localhost:8191
 ```python
 from sitemapper.transport import make_session
 session = make_session(flaresolverr_url="http://localhost:8191")
-# session is a CloudflareSession — use it like requests.Session
+# session is a CloudflareSession: use it like requests.Session
 resp = session.get("https://example.com", timeout=30)
 ```
+
+---
+[← Crawl & Link Graph](crawl_graph.md) · [Home](../README.md) · [CLI →](cli.md)
