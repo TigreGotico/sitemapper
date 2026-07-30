@@ -1,13 +1,13 @@
 # Discovery
 
 `discover(base_url, *, timeout=30.0) -> SiteDiscovery` is the passive
-entry point.  It fetches:
+entry point. It fetches:
 
-1. `robots.txt` — extracts `Sitemap:` directives, `Crawl-delay`, and
+1. `robots.txt`. This extracts `Sitemap:` directives, `Crawl-delay`, and
    `Disallow`/`Allow` rules.
-2. All sitemap documents referenced in `robots.txt` plus the conventional
-   `/sitemap.xml`.  Sitemapindex documents are recursed one level deep.
-   Gzip-compressed sitemaps (`.gz`) are transparently decompressed.
+2. All sitemap documents referenced in `robots.txt`, plus the conventional
+   `/sitemap.xml`. Sitemap index documents recurse one level deep.
+   Gzip-compressed sitemaps (`.gz`) are decompressed automatically.
 
 No HTML pages are fetched.
 
@@ -26,9 +26,9 @@ info.to_dict()      # JSON-serialisable dict
 ## Robots
 
 ```python
-info.robots.sitemaps        # list[str] — Sitemap: directive URLs
+info.robots.sitemaps        # list[str]: Sitemap: directive URLs
 info.robots.crawl_delay     # float | None
-info.robots.is_allowed(url) # bool — delegates to urllib.robotparser
+info.robots.is_allowed(url) # bool: delegates to urllib.robotparser
 info.robots.groups          # list[RobotsGroup]
 ```
 
@@ -49,4 +49,7 @@ u.priority       # float | None
 ## Caps
 
 Pass `max_sitemaps=` and `max_urls=` to `Sitemapper()` or `discover()` to
-control runaway behaviour on very large sites.
+limit runaway growth on very large sites.
+
+---
+[← Quickstart](quickstart.md) · [Home](../README.md) · [Crawl & Link Graph →](crawl_graph.md)

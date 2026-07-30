@@ -8,21 +8,21 @@ python -m sitemapper <url> [options]
 
 | Argument / Flag        | Default | Description |
 |------------------------|---------|-------------|
-| `url`                  | —       | Base URL to recon. |
-| `--crawl`              | off     | Enable BFS crawl; default is passive discovery. |
+| `url`                  | none    | Base URL to recon. |
+| `--crawl`              | off     | Enable BFS crawl. Default is passive discovery. |
 | `--max-pages N`        | 200     | Max internal pages to fetch during crawl. |
 | `--max-depth N`        | 3       | Max BFS depth. |
 | `--same-domain`        | on      | Restrict crawl to same host. |
 | `--no-same-domain`     | off     | Allow crawling across sub-domains. |
-| `--json FILE`          | —       | Write JSON output to FILE. |
-| `--dot FILE`           | —       | Write Graphviz DOT to FILE (requires `--crawl`). |
-| `--flaresolverr URL`   | —       | FlareSolverr base URL. |
+| `--json FILE`          | none    | Write JSON output to FILE. |
+| `--dot FILE`           | none    | Write Graphviz DOT to FILE (requires `--crawl`). |
+| `--flaresolverr URL`   | none    | FlareSolverr base URL. |
 | `--timeout SECONDS`    | 30.0    | Per-request timeout. |
 
 ## Examples
 
 ```bash
-# Passive discovery — prints summary
+# Passive discovery: prints summary
 python -m sitemapper https://www.python.org
 
 # Crawl + export
@@ -34,3 +34,6 @@ python -m sitemapper https://www.python.org \
 python -m sitemapper https://example.com \
     --flaresolverr http://localhost:8191
 ```
+
+---
+[← Transport](transport.md) · [Home](../README.md) · [Site Survey →](site-survey.md)

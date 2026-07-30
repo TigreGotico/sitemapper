@@ -12,7 +12,6 @@ pip install sitemapper[anon]      # adds anon_requests for IP rotation
 
 ```python
 from sitemapper import discover
-
 info = discover("https://www.python.org")
 print(info.summary())
 # Sitemaps found: 1
@@ -21,8 +20,8 @@ print(info.summary())
 # ...
 ```
 
-`discover()` fetches only robots.txt and the sitemaps listed there (plus
-`/sitemap.xml`).  No HTML pages are touched.
+`discover()` fetches only robots.txt and the sitemaps listed there, plus
+`/sitemap.xml`. No HTML pages are touched.
 
 ## Active crawl
 
@@ -42,3 +41,6 @@ python -m sitemapper https://www.python.org
 # Crawl and export:
 python -m sitemapper https://www.python.org --crawl --max-pages 50 --json out.json --dot out.dot
 ```
+
+---
+[Home](../README.md) · [Discovery →](discovery.md)

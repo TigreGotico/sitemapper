@@ -1,8 +1,8 @@
 # sitemapper
 
-Site-recon tooling for scraper development.  Given a base URL, discovers
-site structure (robots.txt + sitemaps) and optionally crawls internal pages,
-mapping internal and outgoing links into a graph.
+Site-recon tooling for scraper development. Given a base URL, sitemapper finds
+the site structure (robots.txt and sitemaps). It can also crawl internal
+pages and map internal and outgoing links into a graph.
 
 ## Quickstart
 
@@ -14,7 +14,7 @@ pip install sitemapper[stealth]   # recommended: adds curl_cffi TLS impersonatio
 ```python
 from sitemapper import discover, crawl
 
-# Passive — no HTML crawled.  Fetches robots.txt and all sitemaps.
+# Passive: no HTML crawled. Fetches robots.txt and all sitemaps.
 info = discover("https://www.python.org")
 print(info.summary())
 # Base URL:         https://www.python.org
@@ -22,7 +22,7 @@ print(info.summary())
 # URLs in sitemaps: 342
 # Crawl-delay:      None
 
-# Active — bounded BFS, builds a link graph.
+# Active: bounded BFS that builds a link graph.
 graph = crawl("https://www.python.org", max_pages=50, max_depth=2)
 print(graph.summary())
 # Pages crawled (internal): 50
@@ -34,15 +34,15 @@ print(graph.summary())
 
 | Function / class    | Description |
 |---------------------|-------------|
-| `discover(url)`     | Passive discovery: robots.txt + sitemaps → `SiteDiscovery`. |
-| `crawl(url)`        | Bounded BFS crawl → `LinkGraph`. |
-| `Sitemapper`        | Stateful class; holds config, transport, and caches discovery results. |
+| `discover(url)`     | Passive discovery: robots.txt and sitemaps, returns a `SiteDiscovery`. |
+| `crawl(url)`        | Bounded BFS crawl, returns a `LinkGraph`. |
+| `Sitemapper`        | Stateful class. Holds config and transport, and caches discovery results. |
 
 ## Transport
 
-All HTTP goes through
+All HTTP traffic goes through
 [`unblock_requests.CloudflareSession`](https://github.com/TigreGotico/unblock_requests)
-(env prefix `SITEMAPPER`), so recon works on Cloudflare-fronted sites.
+(env prefix `SITEMAPPER`). This lets recon work on Cloudflare-fronted sites.
 
 ```bash
 export SITEMAPPER_FLARESOLVERR_URL=http://localhost:8191   # point at a running FlareSolverr
@@ -50,7 +50,7 @@ export SITEMAPPER_FLARESOLVERR_FALLBACK=1                  # escalate blocked GE
 export SITEMAPPER_WAYBACK_FALLBACK=1                       # fall back to Wayback Machine
 ```
 
-Or configure programmatically:
+Or configure it in code:
 
 ```python
 from sitemapper import Sitemapper
@@ -76,18 +76,22 @@ Full flag list: `python -m sitemapper --help`
 
 ## LinkGraph
 
-`crawl()` returns a `LinkGraph` with no third-party dependencies (plain dict
-adjacency):
+`crawl()` returns a `LinkGraph`. It has no third-party dependencies and stores
+its data as a plain dict adjacency:
 
 ```python
-graph.nodes           # dict[str, Node]   — url, status, title, depth, ...
+graph.nodes           # dict[str, Node]: url, status, title, depth, ...
 graph.internal        # set[str]
 graph.external        # set[str]
 graph.domains()       # {host: count}  outgoing external links
 graph.to_json()
-graph.to_dot()        # Graphviz digraph  (dot -Tsvg out.dot)
+graph.to_dot()        # Graphviz digraph (dot -Tsvg out.dot)
 graph.summary()
 ```
+
+## Related projects
+
+- [`unblock_requests`](https://github.com/TigreGotico/unblock_requests) supplies the transport layer that handles Cloudflare-fronted sites.
 
 ## Docs
 
@@ -96,3 +100,4 @@ graph.summary()
 - [docs/crawl_graph.md](docs/crawl_graph.md)
 - [docs/transport.md](docs/transport.md)
 - [docs/cli.md](docs/cli.md)
+- [docs/site-survey.md](docs/site-survey.md)
