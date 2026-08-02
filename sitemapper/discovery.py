@@ -14,6 +14,22 @@ if TYPE_CHECKING:
 _DEFAULT_MAX_SITEMAPS = 50
 _DEFAULT_MAX_URLS = 50_000
 
+# Title/body markers seen on WAF and CDN soft-block pages (403s, "access
+# denied" interstitials, etc.) that are not Cloudflare JS challenges — those
+# are covered separately by ``unblock_requests.is_challenge``.
+_BLOCK_MARKERS = (
+    "403 forbidden",
+    "access denied",
+    "permission denied",
+    "you have been blocked",
+)
+
+
+def _is_soft_block(text: str) -> bool:
+    """Heuristically detect a non-Cloudflare block/interstitial page."""
+    head = (text or "")[:1500].lower()
+    return any(marker in head for marker in _BLOCK_MARKERS)
+
 
 @dataclass
 class SiteDiscovery:
@@ -93,11 +109,10 @@ def discover(
     Returns:
         A populated :class:`SiteDiscovery`.
     """
-    # Defensive import for is_blocked detector
     try:
-        from unblock_requests import is_blocked as _is_blocked
-    except Exception:
-        def _is_blocked(text): return False
+        from unblock_requests import is_challenge as _is_challenge
+    except ImportError:
+        def _is_challenge(text): return False
 
     # Normalise base — strip trailing slash.
     base = base_url.rstrip("/")
@@ -110,7 +125,7 @@ def discover(
         r = session.get(robots_url, timeout=timeout)
         if r.status_code == 200:
             robots_text = r.text
-            if _is_blocked(robots_text):
+            if _is_challenge(robots_text) or _is_soft_block(robots_text):
                 blocked = True
                 robots_text = ""
     except Exception:

@@ -69,13 +69,14 @@ correctly from 10 fetched pages, including outgoing-link mapping.
 
 ## Limitations surfaced
 
-- Site-specific soft blocks are not detected. erowid.org answers a datacenter
-  IP with an HTTP 200 body titled "403 - Blocked". sitemapper fetches that
-  block page and parses it as `robots.txt`, so the table shows `robots: yes`
-  even though the content is junk. This is the same class of soft block
-  `pyerowid` handles with a Wayback fallback. A candidate enhancement is an
-  `is_block_page()` heuristic with a Wayback or solver retry, mirroring the
-  client.
+- Soft blocks are detected via title/body markers ("403 Forbidden", "Access
+  Denied", "Permission Denied") and Cloudflare interstitials, but the
+  heuristic covers only common WAF/CDN block pages. A block page that uses
+  none of those markers is indistinguishable from real `robots.txt`
+  content, so `discover()` may still report `robots: yes` with junk data.
+  Callers that need certainty should inspect `SiteDiscovery.blocked` and,
+  when detection misses a variant, add a Wayback or solver retry, mirroring
+  the client.
 
 - URL collection is capped at `max_urls` (default 10,000). Sitemaps larger
   than that are truncated. Raise the limit for full enumeration.

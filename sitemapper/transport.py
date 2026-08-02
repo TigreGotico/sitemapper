@@ -22,8 +22,8 @@ _ENV_PREFIX = "SITEMAPPER"
 def make_session(
     *,
     flaresolverr_url: Optional[str] = None,
-    flaresolverr_fallback: bool = True,
-    wayback_fallback: bool = True,
+    flaresolverr_fallback: Optional[bool] = None,
+    wayback_fallback: Optional[bool] = None,
     timeout: float = 30.0,
 ) -> CloudflareSession:
     """Return a :class:`~unblock_requests.CloudflareSession` configured for
@@ -34,8 +34,11 @@ def make_session(
                                ``SITEMAPPER_FLARESOLVERR_URL``.
         flaresolverr_fallback: Escalate blocked GETs to FlareSolverr; keep
                                the fast curl-cffi path for normal requests.
+                               ``None`` (default) reads
+                               ``SITEMAPPER_FLARESOLVERR_FALLBACK``.
         wayback_fallback:      Fall back to the Wayback Machine when the live
-                               request fails completely.
+                               request fails completely.  ``None`` (default)
+                               reads ``SITEMAPPER_WAYBACK_FALLBACK``.
         timeout:               Default socket timeout in seconds (unused by
                                the session itself but stored for callers).
 

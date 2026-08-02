@@ -17,8 +17,11 @@ class Sitemapper:
 
     Args:
         flaresolverr_url:      FlareSolverr base URL.
-        flaresolverr_fallback: Escalate blocked GETs to the solver.
+        flaresolverr_fallback: Escalate blocked GETs to the solver.  ``None``
+                               (default) reads ``SITEMAPPER_FLARESOLVERR_FALLBACK``.
         wayback_fallback:      Fall back to the Wayback Machine on errors.
+                               ``None`` (default) reads
+                               ``SITEMAPPER_WAYBACK_FALLBACK``.
         timeout:               Default per-request timeout in seconds.
         max_sitemaps:          Cap on sitemap documents fetched per discovery.
         max_urls:              Cap on sitemap URLs collected per discovery.
@@ -28,8 +31,8 @@ class Sitemapper:
         self,
         *,
         flaresolverr_url: Optional[str] = None,
-        flaresolverr_fallback: bool = True,
-        wayback_fallback: bool = True,
+        flaresolverr_fallback: Optional[bool] = None,
+        wayback_fallback: Optional[bool] = None,
         timeout: float = 30.0,
         max_sitemaps: int = 50,
         max_urls: int = 50_000,
