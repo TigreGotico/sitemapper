@@ -41,7 +41,7 @@ print(graph.summary())
 ## Transport
 
 All HTTP traffic goes through
-[`unblock_requests.CloudflareSession`](https://github.com/TigreGotico/unblock_requests)
+[`unblock_requests.CloudflareSession`](https://github.com/LeMetadatarr/unblock_requests)
 (env prefix `SITEMAPPER`). This lets recon work on Cloudflare-fronted sites.
 
 ```bash
@@ -91,7 +91,8 @@ graph.summary()
 
 ## Related projects
 
-- [`unblock_requests`](https://github.com/TigreGotico/unblock_requests) supplies the transport layer that handles Cloudflare-fronted sites.
+- [`unblock_requests`](https://github.com/LeMetadatarr/unblock_requests) supplies the transport layer that handles Cloudflare-fronted sites.
+- [`anon_requests`](https://github.com/LeMetadatarr/anon_requests) adds IP rotation, used by the optional `sitemapper[anon]` extra.
 
 ## Docs
 
