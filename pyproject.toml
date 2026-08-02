@@ -32,8 +32,8 @@ anon = ["anon_requests"]
 test = ["pytest"]
 
 [project.urls]
-Homepage = "https://github.com/TigreGotico/sitemapper"
-Repository = "https://github.com/TigreGotico/sitemapper"
+Homepage = "https://github.com/LeMetadatarr/sitemapper"
+Repository = "https://github.com/LeMetadatarr/sitemapper"
 
 [tool.setuptools.packages.find]
 where = ["."]
